@@ -3,8 +3,11 @@
 # add-apt-repository -y ppa:avsm/ppa
 apt-get install -y make git gcc ocaml opam pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils g++
 
-curl -s https://packagecloud.io/install/repositories/souffle-lang/souffle/script.deb.sh | bash
-apt-get install -y souffle
+# Install souffle
+wget https://souffle-lang.github.io/ppa/souffle-key.public -O /usr/share/keyrings/souffle-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/souffle-archive-keyring.gpg] https://souffle-lang.github.io/ppa/ubuntu/ stable main" | sudo tee /etc/apt/sources.list.d/souffle.list
+apt update
+apt install -y souffle
 
 # Install llvm
 CODE_NAME=$(lsb_release -c | cut -f 2-)
