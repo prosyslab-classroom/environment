@@ -2,7 +2,7 @@
 
 CODE_NAME=$(lsb_release -c | cut -f 2-)
 
-# 20.04
+# 22.04
 if [ $CODE_NAME == "jammy" ]; then
 echo -e "
 # LLVM13
