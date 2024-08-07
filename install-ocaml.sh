@@ -4,7 +4,12 @@ export OCAML_VERSION=4.13.1
 export OPAM_SWITCH=prosyslab-classroom-$OCAML_VERSION
 export OPAMYES=1
 
-opam init --compiler=$OCAML_VERSION --disable-sandboxing
+if [[ $SHLVL -gt 2 ]]; then
+    opam init github git+https://github.com/ocaml/opam-repository.git
+else
+    opam init --compiler=$OCAML_VERSION --disable-sandboxing
+fi
+
 opam switch create $OPAM_SWITCH --package=ocaml-variants.$OCAML_VERSION+options,ocaml-option-flambda
 
 eval $(opam env)

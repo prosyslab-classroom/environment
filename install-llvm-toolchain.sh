@@ -3,11 +3,11 @@
 CODE_NAME=$(lsb_release -c | cut -f 2-)
 
 # 20.04
-if [ $CODE_NAME == "focal" ]; then
+if [ $CODE_NAME == "jammy" ]; then
 echo -e "
 # LLVM13
-deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main
-deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main" >> /etc/apt/sources.list
+deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-13 main
+deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-13 main" >> /etc/apt/sources.list
 fi
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 apt update
