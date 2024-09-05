@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# add-apt-repository -y ppa:avsm/ppa
-apt-get install -y make git gcc ocaml opam pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils g++
+add-apt-repository -y ppa:avsm/ppa
+apt-get install -y make git gcc ocaml opam dune pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils g++
 
 # Install souffle
 wget https://souffle-lang.github.io/ppa/souffle-key.public -O /usr/share/keyrings/souffle-archive-keyring.gpg
@@ -10,7 +10,7 @@ apt update
 apt install -y souffle
 
 # Install llvm
-sudo -u student -H bash /tmp/install-llvm-toolchain.sh
+sudo -H bash /tmp/install-llvm-toolchain.sh
 
 # Add user
 userdel -r student || true
