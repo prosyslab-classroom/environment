@@ -10,16 +10,9 @@ ENTRIES_NUM=0
 double_check() {
   CSV_FILE=$1
   PEM_FILE=$2
-  RETRY=$3  
-  LOG_FILE=$4
+  LOG_FILE=$3
 
   echo "Running check script to identify failures..."
-
-  bash $ROOT/kcloud-setup/check-kcloud.sh $CSV_FILE $PEM_FILE
-  
-  if [[ $RETRY -eq 0 ]]; then
-    return
-  fi
 
   if [[ -f $LOG_FILE ]]; then
     echo "Re-running failed components based on check results..."
@@ -44,7 +37,7 @@ double_check() {
       fi
     done < $LOG_FILE
 
-    echo "All double-checks completed."
+    echo "All re-installations completed."
     echo "Please make sure to run the check script again to verify the changes."
   else
     echo "No failed checks found."
@@ -123,7 +116,7 @@ done <"$CSV_FILE"
 parse_results $ENTRIES_NUM $LOG_FILE
 
 if [[ $RETRY -eq 1 ]]; then
-  double_check $CSV_FILE $PEM_FILE $RETRY $LOG_FILE
+  double_check $CSV_FILE $PEM_FILE $LOG_FILE
 fi
 
 echo "All checks completed."
