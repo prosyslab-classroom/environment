@@ -39,4 +39,7 @@ RUN git clone https://github.com/prosyslab-classroom/checkml.git
 RUN cd checkml && ./build.sh
 RUN cp /checkml/_build/default/src/main.exe /usr/bin/checkml
 
+# Clean up
+RUN rm -rf $SCRIPT
 USER student
+WORKDIR $HOME
