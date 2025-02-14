@@ -17,4 +17,5 @@ opam install -y utop dune llvm.13.0.0 ounit merlin ocamlformat=0.26.0 ocaml-lsp-
 opam pin add git+https://github.com/prosyslab-classroom/llvmutils.git
 opam pin add git+https://github.com/prosyslab/cil
 
-echo "$(opam env)" >>~/.bashrc
+echo "opam switch $OPAM_SWITCH" >>~/.bashrc
+echo "eval \$(opam env)" >>~/.bashrc
