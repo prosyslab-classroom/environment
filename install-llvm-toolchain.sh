@@ -2,27 +2,12 @@
 
 CODE_NAME=$(lsb_release -c | cut -f 2-)
 
-# 22.04
-if [ $CODE_NAME == "jammy" ]; then
-echo -e "
-# LLVM13
-deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-13 main
-deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-13 main" >> /etc/apt/sources.list
-fi
-wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
-apt update
-
-# Remove all existing alternatives
-update-alternatives --remove-all llvm
-update-alternatives --remove-all clang
-
-# exit on first error
 set -e
 
-VERSION=13
+VERSION=15
 
 # install
-apt install -y libllvm-$VERSION-ocaml-dev libllvm$VERSION llvm-$VERSION llvm-$VERSION-dev llvm-$VERSION-doc llvm-$VERSION-examples llvm-$VERSION-runtime && \
+apt install -y libllvm-$VERSION-ocaml-dev libllvm$VERSION llvm-$VERSION llvm-$VERSION-dev llvm-$VERSION-doc llvm-$VERSION-examples llvm-$VERSION-runtime libzstd-dev && \
 apt install -y clang-$VERSION clang-tools-$VERSION clang-$VERSION-doc libclang-common-$VERSION-dev libclang-$VERSION-dev libclang1-$VERSION clang-format-$VERSION python3-clang-$VERSION clangd-$VERSION && \
 apt install -y libfuzzer-$VERSION-dev && \
 apt install -y lldb-$VERSION && \

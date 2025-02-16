@@ -1,8 +1,10 @@
 #!/bin/bash
 
-export OCAML_VERSION=4.13.1
+export OCAML_VERSION=5.1.0
 export OPAM_SWITCH=prosyslab-classroom-$OCAML_VERSION
 export OPAMYES=1
+
+set -e
 
 if [[ $SHLVL -gt 2 ]]; then
     opam init github git+https://github.com/ocaml/opam-repository.git
@@ -12,10 +14,10 @@ fi
 
 opam switch create $OPAM_SWITCH --package=ocaml-variants.$OCAML_VERSION+options,ocaml-option-flambda
 
-eval $(opam env)
-opam install -y utop dune llvm.13.0.0 ounit merlin ocamlformat=0.26.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx.2.8.1
+eval $(SHELL=bash opam env --switch=$OPAM_SWITCH)
+opam install -y utop dune llvm ounit merlin ocamlformat=0.26.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx
 opam pin add git+https://github.com/prosyslab-classroom/llvmutils.git
-opam pin add git+https://github.com/prosyslab/cil
+opam pin add prosys-cil https://github.com/prosyslab/cil.git
 
 echo "opam switch $OPAM_SWITCH" >>~/.bashrc
 echo "eval \$(opam env)" >>~/.bashrc
