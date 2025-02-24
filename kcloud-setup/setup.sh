@@ -30,3 +30,11 @@ apt-get install -y libtree-sitter-dev cargo nodejs
 sudo git clone https://github.com/prosyslab-classroom/checkml.git 
 sudo cd checkml && sudo -u student -H bash ./build.sh
 sudo cp _build/default/src/main.exe /usr/bin/checkml
+
+# Install dafny
+cd /
+sudo wget https://github.com/dafny-lang/dafny/releases/download/v4.10.0/dafny-4.10.0-x64-ubuntu-20.04.zip
+sudo apt install -y dotnet-sdk-8.0
+sudo dafny-4.10.0-x64-ubuntu-20.04.zip
+sudo rm dafny-4.10.0-x64-ubuntu-20.04.zip
+sudo echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
