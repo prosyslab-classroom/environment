@@ -21,7 +21,7 @@ check_clean_userdir() {
 }
 
 check_clang() {
-  if clang --version | grep -q "Ubuntu clang version 13.0.1-2ubuntu2.2"; then
+  if clang --version | grep -q "Ubuntu clang version 15"; then
     echo "[GOOD] clang is installed."
   else
     echo "[BAD] clang is not installed on $IP."
