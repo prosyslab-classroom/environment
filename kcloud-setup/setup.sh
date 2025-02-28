@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This disables interactive prompts such as "Pending kernel upgrade" or "Daemons using outdated libraries"
+export DEBIAN_FRONTEND=noninteractive
+
 add-apt-repository -y ppa:avsm/ppa
 apt-get install -y make git gcc ocaml opam dune pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils g++
 

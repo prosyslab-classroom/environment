@@ -30,7 +30,7 @@ check_clang() {
 }
 
 check_opam() {
-  OPAM_SWITCH=prosyslab-classroom-4.13.1
+  OPAM_SWITCH=prosyslab-classroom-5.1.0
 
   if sudo -u student -H bash -c "opam switch $OPAM_SWITCH; eval \$(opam env); opam list" | grep z3 >/dev/null; then
     echo "[GOOD] opam is installed."
