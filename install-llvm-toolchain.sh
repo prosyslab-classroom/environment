@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 CODE_NAME=$(lsb_release -c | cut -f 2-)
 
 set -e

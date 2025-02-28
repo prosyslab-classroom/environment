@@ -12,7 +12,10 @@ else
     opam init --compiler=$OCAML_VERSION --disable-sandboxing
 fi
 
-opam switch create $OPAM_SWITCH --package=ocaml-variants.$OCAML_VERSION+options,ocaml-option-flambda
+# if the switch is already there, skip
+if ! opam switch list -s | grep -q "^$OPAM_SWITCH\$"; then
+    opam switch create $OPAM_SWITCH --package=ocaml-variants.$OCAML_VERSION+options,ocaml-option-flambda
+fi
 
 eval $(SHELL=bash opam env --switch=$OPAM_SWITCH)
 opam install -y utop dune llvm ounit merlin ocamlformat=0.26.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx
