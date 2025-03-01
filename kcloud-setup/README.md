@@ -21,3 +21,20 @@ For example, `./setup-kcloud.sh is593.csv IS593A.pem` would check if each machin
 5. souffle
 
 If `-r` option is added, the script will attempt to reinstall the missing packages.
+
+
+
+## Using Pyinfra
+
+```bash
+# pyinfra [inventory] [operations]
+pyinfra cs348.py deploy.py --no-wait -y
+```
+
+* Operations which download packages from `apt` have a limited parallelism due to their rate-limit policy.
+
+Also, you can check if processes are running in host machines with:
+
+```bash
+pyinfra cs348.py exec -- 'ps aux | grep "opam install" | grep -v "grep"'
+```
