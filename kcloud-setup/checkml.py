@@ -1,6 +1,12 @@
 from pyinfra import host, local
 from pyinfra.operations import apt, server, files, git
 
+apt.packages(
+    name="checkml dependencies",
+    packages=["libtree-sitter-dev", "cargo", "nodejs"],
+    _parallel=4,
+)
+
 git.repo(
     name="Clone CheckML repository",
     src="https://github.com/prosyslab-classroom/checkml.git",
