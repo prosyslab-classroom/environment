@@ -1,0 +1,1 @@
+pyinfra --user=student --password=1234 inventory/cs348.py -y exec -- 'ls /home/student | wc -l | xargs -I{} expr {} \> 0'
