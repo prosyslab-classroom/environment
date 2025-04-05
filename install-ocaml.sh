@@ -21,6 +21,7 @@ eval $(SHELL=bash opam env --switch=$OPAM_SWITCH)
 opam install -y utop dune llvm ounit merlin ocamlformat=0.26.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx
 opam pin add git+https://github.com/prosyslab-classroom/llvmutils.git
 opam pin add prosys-cil https://github.com/prosyslab/cil.git
+opam pin add git+https://github.com/prosyslab-classroom/checkml.git
 
 echo "opam switch $OPAM_SWITCH" >>~/.bashrc
 echo "eval \$(opam env)" >>~/.bashrc

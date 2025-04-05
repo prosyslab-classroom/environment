@@ -3,7 +3,7 @@
 # This disables interactive prompts such as "Pending kernel upgrade" or "Daemons using outdated libraries"
 export DEBIAN_FRONTEND=noninteractive
 
-add-apt-repository -y ppa:avsm/ppa
+# add-apt-repository -y ppa:avsm/ppa
 apt-get install -y make git gcc ocaml opam dune pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils g++
 
 # Install souffle
@@ -26,13 +26,6 @@ echo "student:1234" | chpasswd
 echo 1234 | sudo -S apt-get -y install curl
 cd /home/student
 sudo -u student -H bash /tmp/install-ocaml.sh
-
-# Setup checkml
-cd /
-apt-get install -y libtree-sitter-dev cargo nodejs
-sudo git clone https://github.com/prosyslab-classroom/checkml.git 
-sudo cd checkml && sudo -u student -H bash ./build.sh
-sudo cp _build/default/src/main.exe /usr/bin/checkml
 
 # Install dafny
 cd /

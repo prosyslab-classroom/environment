@@ -26,12 +26,12 @@ server.user(
     user="student",
     home="/home/student",
     shell="/bin/bash",
+    present=True,
 )
 
-server.group(
-    name="Ensure student user has sudo access",
-    group="sudo",
-    present=True,
+server.shell(
+    name="Ensure student is in sudo group",
+    commands=["adduser student sudo"],
 )
 
 server.shell(
