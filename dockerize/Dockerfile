@@ -8,7 +8,9 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     apt-get install -y make git gcc ocaml pkg-config m4 cmake sudo python2.7 libgmp-dev python3-distutils curl wget opam vim \
     # For checkml
-    libtree-sitter-dev cargo nodejs
+    libtree-sitter-dev cargo nodejs \
+    # For constrained-decoding
+    python3-pip libcurl4-gnutls-dev
 
 RUN wget https://souffle-lang.github.io/ppa/souffle-key.public -O /usr/share/keyrings/souffle-archive-keyring.gpg
 RUN echo "deb [signed-by=/usr/share/keyrings/souffle-archive-keyring.gpg] https://souffle-lang.github.io/ppa/ubuntu/ stable main" | sudo tee /etc/apt/sources.list.d/souffle.list
@@ -37,7 +39,7 @@ WORKDIR /
 USER root
 RUN git clone https://github.com/prosyslab-classroom/checkml.git 
 RUN cd checkml && ./build.sh
-RUN cp /checkml/_build/default/src/main.exe /usr/bin/checkml
+RUN cp /checkml/_build/default/src/checkml.exe /usr/bin/checkml
 
 # Install dafny
 RUN wget https://github.com/dafny-lang/dafny/releases/download/v4.10.0/dafny-4.10.0-x64-ubuntu-20.04.zip
@@ -45,6 +47,10 @@ RUN apt install -y dotnet-sdk-8.0
 RUN unzip dafny-4.10.0-x64-ubuntu-20.04.zip
 RUN rm dafny-4.10.0-x64-ubuntu-20.04.zip
 RUN echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
+
+# Install huggingface
+RUN pip3 install -U "huggingface_hub[cli]"
+RUN echo "export PATH=\"$HOME/.local/bin:$PATH\"" >> /home/student/.bashrc
 
 # Clean up
 RUN rm -rf $SCRIPT
