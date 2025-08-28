@@ -52,6 +52,15 @@ RUN echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
 RUN pip3 install -U "huggingface_hub[cli]"
 RUN echo "export PATH=\"$HOME/.local/bin:$PATH\"" >> /home/student/.bashrc
 
+# Setup BitNet
+RUN git clone --recursive https://github.com/prosyslab-classroom/BitNet
+WORKDIR /BitNet
+RUN pip3 install -r requirements.txt
+RUN hf download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T
+RUN python3 setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s
+RUN chmod 755 run_inference.sh
+RUN ln -s /BitNet/run_inference.sh /usr/local/bin/run_inference
+
 # Clean up
 RUN rm -rf $SCRIPT
 USER student
