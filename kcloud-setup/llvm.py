@@ -1,5 +1,5 @@
 from pyinfra import host
-from pyinfra.operations import apt, server, files, git
+from pyinfra.operations import apt, files, git, server
 
 # Define LLVM version
 LLVM_VERSION = 15
@@ -8,14 +8,30 @@ LLVM_VERSION = 15
 apt.packages(
     name="Install LLVM packages",
     packages=[
-        f"libllvm-{LLVM_VERSION}-ocaml-dev", f"libllvm{LLVM_VERSION}", f"llvm-{LLVM_VERSION}", f"llvm-{LLVM_VERSION}-dev",
-        f"llvm-{LLVM_VERSION}-doc", f"llvm-{LLVM_VERSION}-examples", f"llvm-{LLVM_VERSION}-runtime", "libzstd-dev",
-        f"clang-{LLVM_VERSION}", f"clang-tools-{LLVM_VERSION}", f"clang-{LLVM_VERSION}-doc", f"libclang-common-{LLVM_VERSION}-dev",
-        f"libclang-{LLVM_VERSION}-dev", f"libclang1-{LLVM_VERSION}", f"clang-format-{LLVM_VERSION}", f"python3-clang-{LLVM_VERSION}",
-        f"clangd-{LLVM_VERSION}", f"libfuzzer-{LLVM_VERSION}-dev", f"lldb-{LLVM_VERSION}", f"lld-{LLVM_VERSION}",
-        f"libc++-{LLVM_VERSION}-dev", f"libc++abi-{LLVM_VERSION}-dev"
+        f"libllvm-{LLVM_VERSION}-ocaml-dev",
+        f"libllvm{LLVM_VERSION}",
+        f"llvm-{LLVM_VERSION}",
+        f"llvm-{LLVM_VERSION}-dev",
+        f"llvm-{LLVM_VERSION}-doc",
+        f"llvm-{LLVM_VERSION}-examples",
+        f"llvm-{LLVM_VERSION}-runtime",
+        "libzstd-dev",
+        f"clang-{LLVM_VERSION}",
+        f"clang-tools-{LLVM_VERSION}",
+        f"clang-{LLVM_VERSION}-doc",
+        f"libclang-common-{LLVM_VERSION}-dev",
+        f"libclang-{LLVM_VERSION}-dev",
+        f"libclang1-{LLVM_VERSION}",
+        f"clang-format-{LLVM_VERSION}",
+        f"python3-clang-{LLVM_VERSION}",
+        f"clangd-{LLVM_VERSION}",
+        f"libfuzzer-{LLVM_VERSION}-dev",
+        f"lldb-{LLVM_VERSION}",
+        f"lld-{LLVM_VERSION}",
+        f"libc++-{LLVM_VERSION}-dev",
+        f"libc++abi-{LLVM_VERSION}-dev",
     ],
-    cache_time=60 * 60 * 24, # every 24 hours,
+    cache_time=60 * 60 * 24,  # every 24 hours,
     _parallel=4,
 )
 
@@ -74,10 +90,8 @@ server.shell(
   --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-{LLVM_VERSION} \
   --slave /usr/bin/llvm-undname llvm-undname /usr/bin/llvm-undname-{LLVM_VERSION} \
   --slave /usr/bin/llvm-xray llvm-xray /usr/bin/llvm-xray-{LLVM_VERSION}""",
-
-
-# clang
-f"""update-alternatives \
+        # clang
+        f"""update-alternatives \
   --install /usr/bin/clang clang /usr/bin/clang-{LLVM_VERSION} 10 \
   --slave /usr/bin/clang++ clang++ /usr/bin/clang++-{LLVM_VERSION} \
   --slave /usr/bin/clang-apply-replacements clang-apply-replacements /usr/bin/clang-apply-replacements-{LLVM_VERSION} \
@@ -124,10 +138,9 @@ f"""update-alternatives \
   --slave /usr/bin/lldb-server lldb-server /usr/bin/lldb-server-{LLVM_VERSION} \
   --slave /usr/bin/lldb-test lldb-test /usr/bin/lldb-test-{LLVM_VERSION} \
   --slave /usr/bin/lldb-vscode lldb-vscode /usr/bin/lldb-vscode-{LLVM_VERSION}""",
-
-# make system default
-f"""update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
+        # make system default
+        f"""update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
-"""
-    ]
+""",
+    ],
 )

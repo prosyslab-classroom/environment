@@ -1,6 +1,6 @@
 from pyinfra import host, local
-from pyinfra.operations import apt, server, files, git
 from pyinfra.facts.server import Which
+from pyinfra.operations import apt, files, git, server
 
 if not host.get_fact(Which, "souffle", _sudo_user="student", _sudo_password="1234"):
     apt.key(

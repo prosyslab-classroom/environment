@@ -34,3 +34,37 @@ sudo apt install -y dotnet-sdk-8.0
 sudo dafny-4.10.0-x64-ubuntu-20.04.zip
 sudo rm dafny-4.10.0-x64-ubuntu-20.04.zip
 sudo echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
+
+# Install BitNet and model
+apt-get install -y python3-pip
+
+# Clone or update BitNet repository
+if [ ! -d "/BitNet/.git" ]; then
+  git clone --recursive https://github.com/prosyslab-classroom/BitNet /BitNet
+else
+  git -C /BitNet pull --ff-only || true
+  git -C /BitNet submodule update --init --recursive || true
+fi
+
+cd /BitNet
+
+# Install Python requirements
+pip3 install -r requirements.txt
+
+# Ensure Hugging Face CLI is available
+pip3 install -U 'huggingface_hub[cli]' hf_transfer
+
+# Download model (prefer `hf`, fallback to `huggingface-cli`)
+mkdir -p models/BitNet-b1.58-2B-4T
+if command -v hf >/dev/null 2>&1; then
+  hf download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T
+else
+  huggingface-cli download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T
+fi
+
+# Run environment setup
+python3 setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s
+
+# Make inference script executable and symlink to PATH
+chmod 755 run_inference.sh
+ln -sf /BitNet/run_inference.sh /usr/local/bin/run_inference

@@ -1,6 +1,6 @@
 from pyinfra import host
-from pyinfra.operations import apt, server, files
 from pyinfra.facts.server import Which
+from pyinfra.operations import apt, files, server
 
 # apt.packages(
 #     name="Dafny dependencies",
@@ -19,7 +19,7 @@ if not host.get_fact(Which, "dafny", _sudo_user="student", _sudo_password="1234"
         name="Install Dafny",
         commands=[
             "yes | unzip /dafny-4.10.0-x64-ubuntu-20.04.zip -d /",
-            'echo "export PATH=/dafny:$PATH" >> /home/student/.bashrc'
+            'echo "export PATH=/dafny:$PATH" >> /home/student/.bashrc',
         ],
         _chdir="/",
     )
