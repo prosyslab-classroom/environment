@@ -37,7 +37,7 @@ RUN $SCRIPT/install-ocaml.sh
 # Setup checkml
 WORKDIR /
 USER root
-RUN git clone https://github.com/prosyslab-classroom/checkml.git 
+RUN git clone https://github.com/prosyslab-classroom/checkml.git
 RUN cd checkml && ./build.sh
 RUN cp /checkml/_build/default/src/checkml.exe /usr/bin/checkml
 
@@ -50,7 +50,7 @@ RUN echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
 
 # Install huggingface
 RUN pip3 install -U "huggingface_hub[cli]"
-RUN echo "export PATH=\"$HOME/.local/bin:$PATH\"" >> /home/student/.bashrc
+RUN echo "export PATH=$HOME/.local/bin:\$PATH" >> /home/student/.bashrc
 
 # Setup BitNet
 RUN git clone --recursive https://github.com/prosyslab-classroom/BitNet
