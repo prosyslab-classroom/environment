@@ -47,10 +47,11 @@ RUN apt install -y dotnet-sdk-8.0
 RUN unzip dafny-4.10.0-x64-ubuntu-20.04.zip
 RUN rm dafny-4.10.0-x64-ubuntu-20.04.zip
 RUN echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
+RUN ln -s /dafny/dafny /usr/local/bin/dafny
 
 # Install huggingface
 RUN pip3 install -U "huggingface_hub[cli]"
-RUN echo "export PATH=\"$HOME/.local/bin:$PATH\"" >> /home/student/.bashrc
+RUN echo "export PATH=$HOME/.local/bin:\$PATH" >> /home/student/.bashrc
 
 # Setup BitNet
 RUN git clone --recursive https://github.com/prosyslab-classroom/BitNet
