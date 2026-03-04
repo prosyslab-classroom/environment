@@ -23,7 +23,7 @@ sudo adduser student sudo
 echo "student:1234" | chpasswd
 
 # Setup opam
-echo 1234 | sudo -S apt-get -y install curl
+echo 1234 | sudo -S apt-get -y install curl libcurl4-gnutls-dev
 cd /home/student
 sudo -u student -H bash /tmp/install-ocaml.sh
 
