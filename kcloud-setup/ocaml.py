@@ -46,7 +46,7 @@ if f"opam switch {OPAM_SWITCH}" not in bashrc_content:
 server.shell(
     name="install ocaml packages",
     commands=[
-        "opam install -y utop dune llvm ounit merlin ocamlformat ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx ocurl",
+        "opam install -y utop dune llvm ounit merlin ocamlformat.0.29.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx ocurl",
         "opam pin add git+https://github.com/prosyslab-classroom/checkml.git",
         "opam pin add git+https://github.com/prosyslab-classroom/llvmutils.git",
         "opam pin add prosys-cil https://github.com/prosyslab/cil.git",
