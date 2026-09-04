@@ -68,3 +68,43 @@ python3 setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s
 # Make inference script executable and symlink to PATH
 chmod 755 run_inference.sh
 ln -sf /BitNet/run_inference.sh /usr/local/bin/run_inference
+
+# Install Lean 4.32.2
+LEAN_VERSION=4.32.2
+LEAN_PLATFORM=linux
+LEAN_ARCHIVE="lean-${LEAN_VERSION}-${LEAN_PLATFORM}.tar.zst"
+LEAN_ROOT="/opt/lean-${LEAN_VERSION}-${LEAN_PLATFORM}"
+
+apt-get install -y zstd
+
+if [ ! -x "${LEAN_ROOT}/bin/lean" ]; then
+  wget "https://github.com/leanprover/lean4/releases/download/v${LEAN_VERSION}/${LEAN_ARCHIVE}" -O "/tmp/${LEAN_ARCHIVE}"
+  tar --use-compress-program=unzstd -xf "/tmp/${LEAN_ARCHIVE}" -C /opt
+  rm -f "/tmp/${LEAN_ARCHIVE}"
+fi
+
+# Make Lean tools available system-wide, including to the student user
+ln -sf "${LEAN_ROOT}/bin/lean" /usr/local/bin/lean
+ln -sf "${LEAN_ROOT}/bin/lake" /usr/local/bin/lake
+ln -sf "${LEAN_ROOT}/bin/leanc" /usr/local/bin/leanc
+/usr/local/bin/lean --version | grep -qF "version ${LEAN_VERSION}"
+
+# Clone or update checklean, build it, and install the executable system-wide
+if [ ! -d "/checklean/.git" ]; then
+  git clone https://github.com/prosyslab-classroom/checklean /checklean
+else
+  git -C /checklean pull --ff-only
+fi
+
+cd /checklean
+lake build check-lean
+install -m 0755 .lake/build/bin/check-lean /usr/local/bin/checklean
+
+# Explicitly keep /usr/local/bin in the student's login and interactive PATH
+grep -qxF 'export PATH="/usr/local/bin:$PATH"' /home/student/.profile || \
+  echo 'export PATH="/usr/local/bin:$PATH"' >> /home/student/.profile
+grep -qxF 'export PATH="/usr/local/bin:$PATH"' /home/student/.bashrc || \
+  echo 'export PATH="/usr/local/bin:$PATH"' >> /home/student/.bashrc
+
+sudo -u student -H bash -lc \
+  'test "$(command -v checklean)" = "/usr/local/bin/checklean"'
