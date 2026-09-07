@@ -16,6 +16,7 @@ SYSTEM_PACKAGES = [
     # "python2.7",
     "libgmp-dev",
     # "python3-distutils",
+    "libcurl4-gnutls-dev",
     "g++",
     "curl",
     # ocaml deps
