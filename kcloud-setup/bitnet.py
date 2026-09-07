@@ -15,7 +15,8 @@ git.repo(
     src="https://github.com/prosyslab-classroom/BitNet",
     dest="/BitNet",
     branch="main",
-    recursive=True,
+    update_submodules=True,
+    recursive_submodules=True,
 )
 
 # Install Python requirements
