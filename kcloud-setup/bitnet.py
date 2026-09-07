@@ -9,6 +9,7 @@ apt.packages(
     name="Install BitNet dependencies (venv, git)",
     packages=["python3-venv", "git"],
     update=True,
+    cache_time=60 * 60 * 24,  # update every 24 hours,
     _parallel=4,
 )
 
