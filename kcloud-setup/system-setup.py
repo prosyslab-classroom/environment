@@ -8,18 +8,18 @@ SYSTEM_PACKAGES = [
     "gcc",
     "ocaml",
     "opam",
-    "dune",
+    # "dune",
     "pkg-config",
     "m4",
     "cmake",
     "sudo",
-    "python2.7",
+    # "python2.7",
     "libgmp-dev",
-    "python3-distutils",
+    # "python3-distutils",
     "g++",
     "curl",
     # ocaml deps
-    "zlib1g-dev"
+    "zlib1g-dev",
     # dafny
     "dotnet-sdk-8.0",
 ]
@@ -37,6 +37,7 @@ server.user(
     user="student",
     home="/home/student",
     shell="/bin/bash",
+    create_home=True,
     present=True,
 )
 
