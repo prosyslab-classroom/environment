@@ -44,6 +44,7 @@ files.line(
 server.shell(
     name="install ocaml packages",
     commands=[
+        "opam pin add -y --no-action llvm 15.0.7+nnp-3",
         "opam install -y utop dune llvm ounit merlin ocamlformat.0.29.0 ocaml-lsp-server odoc z3 ocamlgraph core bisect_ppx ocurl",
         "opam pin add git+https://github.com/prosyslab-classroom/checkml.git",
         "opam pin add git+https://github.com/prosyslab-classroom/llvmutils.git",
