@@ -13,6 +13,7 @@ if not host.get_fact(Which, "dafny", _sudo_user="student", _sudo_password="1234"
         src="https://github.com/dafny-lang/dafny/releases/download/v4.10.0/dafny-4.10.0-x64-ubuntu-20.04.zip",
         dest="/dafny-4.10.0-x64-ubuntu-20.04.zip",
         cache_time=60 * 60 * 24 * 7,  # 1 week
+        _parallel=4,
     )
 
     server.shell(
