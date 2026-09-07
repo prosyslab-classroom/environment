@@ -3,10 +3,12 @@ from pyinfra.facts.server import Which
 from pyinfra.operations import apt, files, git, server
 
 if not host.get_fact(Which, "souffle", _sudo_user="student", _sudo_password="1234"):
-    apt.key(
-        name="Add Soufflé public key",
+    files.download(
+        name="Install Soufflé repository signing key",
         src="https://souffle-lang.github.io/ppa/souffle-key.public",
-        keyid="/usr/share/keyrings/souffle-archive-keyring.gpg",
+        dest="/usr/share/keyrings/souffle-archive-keyring.gpg",
+        mode="644",
+        _parallel=4,
     )
 
     apt.repo(
@@ -18,5 +20,6 @@ if not host.get_fact(Which, "souffle", _sudo_user="student", _sudo_password="123
     apt.packages(
         name="Ensure Soufflé is installed",
         packages=["souffle"],
+        update=True,
         _parallel=4,
     )
