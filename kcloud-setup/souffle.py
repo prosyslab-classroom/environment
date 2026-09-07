@@ -1,25 +1,35 @@
-from pyinfra import host, local
-from pyinfra.facts.server import Which
-from pyinfra.operations import apt, files, git, server
+from pyinfra.operations import apt, files, server
 
-if not host.get_fact(Which, "souffle", _sudo_user="student", _sudo_password="1234"):
-    files.download(
-        name="Install Soufflé repository signing key",
-        src="https://souffle-lang.github.io/ppa/souffle-key.public",
-        dest="/usr/share/keyrings/souffle-archive-keyring.gpg",
-        mode="644",
-        _parallel=4,
-    )
+SOUFFLE_VERSION = "2.5"
+SOUFFLE_DEB = f"x86_64-ubuntu-2404-souffle-{SOUFFLE_VERSION}-Linux.deb"
+SOUFFLE_DEB_PATH = f"/var/tmp/{SOUFFLE_DEB}"
+# SHA-256 of the official GitHub release asset downloaded over HTTPS.
+SOUFFLE_SHA256 = "c7e9dd1349506bbb23c4dcf89e87396198006235f79b1cc516c0a2b67ac067bc"
 
-    apt.repo(
-        name="Add Soufflé repository",
-        src="deb [signed-by=/usr/share/keyrings/souffle-archive-keyring.gpg] https://souffle-lang.github.io/ppa/ubuntu/ stable main",
-        filename="souffle",
-    )
+files.download(
+    name=f"Download Soufflé {SOUFFLE_VERSION} for Ubuntu 24.04",
+    src=f"https://github.com/souffle-lang/souffle/releases/download/{SOUFFLE_VERSION}/{SOUFFLE_DEB}",
+    dest=SOUFFLE_DEB_PATH,
+    sha256sum=SOUFFLE_SHA256,
+    mode="644",
+    _parallel=4,
+)
 
-    apt.packages(
-        name="Ensure Soufflé is installed",
-        packages=["souffle"],
-        update=True,
-        _parallel=4,
-    )
+apt.update(
+    name="Refresh apt indexes for Soufflé dependencies",
+    _parallel=4,
+)
+
+apt.deb(
+    name=f"Install Soufflé {SOUFFLE_VERSION}",
+    src=SOUFFLE_DEB_PATH,
+    _parallel=4,
+)
+
+server.shell(
+    name="Verify Soufflé package version and executable",
+    commands=[
+        f'test "$(dpkg-query -W -f=\'${{Version}}\' souffle)" = "{SOUFFLE_VERSION}"',
+        "souffle --version",
+    ],
+)
