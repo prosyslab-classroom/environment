@@ -27,20 +27,18 @@ server.shell(
 )
 
 # Update .bashrc for student user
-bashrc_content = host.get_fact(Command, command="cat /home/student/.bashrc")
-if f"opam switch {OPAM_SWITCH}" not in bashrc_content:
-    files.line(
-        name="ensure opam switch is set",
-        path="/home/student/.bashrc",
-        line=f"opam switch {OPAM_SWITCH}",
-        present=True,
-    )
-    files.line(
-        name="ensure opam env is set",
-        path="/home/student/.bashrc",
-        line='''eval "$(opam env)"''',
-        present=True,
-    )
+files.line(
+    name="ensure opam switch is set",
+    path="/home/student/.bashrc",
+    line=f"opam switch {OPAM_SWITCH}",
+    present=True,
+)
+files.line(
+    name="ensure opam env is set",
+    path="/home/student/.bashrc",
+    line='''eval "$(opam env)"''',
+    present=True,
+)
 
 # Install OCaml packages
 server.shell(
