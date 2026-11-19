@@ -36,23 +36,26 @@ sudo rm dafny-4.10.0-x64-ubuntu-20.04.zip
 sudo echo "export PATH=/dafny:\$PATH" >> /home/student/.bashrc
 
 # Install BitNet and model
-apt-get install -y python3-pip
+set -e
+apt-get install -y python3-pip python3.12-venv cmake clang
 
 # Clone or update BitNet repository
 if [ ! -d "/BitNet/.git" ]; then
   git clone --recursive https://github.com/prosyslab-classroom/BitNet /BitNet
 else
-  git -C /BitNet pull --ff-only || true
-  git -C /BitNet submodule update --init --recursive || true
+  git -C /BitNet pull --ff-only
+  git -C /BitNet submodule update --init --recursive
 fi
 
 cd /BitNet
+python3 -m venv /BitNet/.venv
+source /BitNet/.venv/bin/activate
 
 # Install Python requirements
 pip3 install -r requirements.txt
 
 # Ensure Hugging Face CLI is available
-pip3 install -U 'huggingface_hub[cli]' hf_transfer
+pip3 install 'huggingface_hub[cli]<1.0'
 
 # Download model (prefer `hf`, fallback to `huggingface-cli`)
 mkdir -p models/BitNet-b1.58-2B-4T
@@ -62,12 +65,17 @@ else
   huggingface-cli download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T
 fi
 
+# Download the Qwen model used by the inference wrappers
+hf download Qwen/Qwen2.5-Coder-3B-Instruct-GGUF --local-dir models/Qwen2.5-Coder-3B-Instruct
+
 # Run environment setup
 python3 setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s
 
-# Make inference script executable and symlink to PATH
-chmod 755 run_inference.sh
-ln -sf /BitNet/run_inference.sh /usr/local/bin/run_inference
+# Register the same inference commands as autograder/common/install-bitnet.sh
+for command in run_inference run_inference_server run_inference_qwen3b run_inference_server_qwen3b; do
+  chmod 755 "/BitNet/${command}.sh"
+  ln -sf "/BitNet/${command}.sh" "/usr/local/bin/${command}"
+done
 
 # Install Lean 4.32.2
 LEAN_VERSION=4.32.2

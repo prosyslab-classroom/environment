@@ -6,8 +6,8 @@ BITNET_ENV = {"PATH": "/BitNet/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbi
 
 # Install venv support without modifying the system Python environment
 apt.packages(
-    name="Install BitNet dependencies (venv, git)",
-    packages=["python3-venv", "git"],
+    name="Install BitNet dependencies (pip, venv, build tools)",
+    packages=["python3-pip", "python3.12-venv", "cmake", "clang", "git", "make", "g++"],
     update=True,
     cache_time=60 * 60 * 24,  # update every 24 hours,
     _parallel=4,
@@ -46,7 +46,7 @@ server.shell(
 server.shell(
     name="Install huggingface hub CLI",
     commands=[
-        "/BitNet/.venv/bin/python -m pip install --upgrade huggingface_hub",
+        "/BitNet/.venv/bin/python -m pip install 'huggingface_hub[cli]<1.0'",
     ],
     _parallel=4,
 )
@@ -63,6 +63,17 @@ server.shell(
     _parallel=4,
 )
 
+# Download the Qwen model used by the inference wrappers
+server.shell(
+    name="Download Qwen2.5-Coder-3B model (gguf)",
+    commands=[
+        "/BitNet/.venv/bin/hf download Qwen/Qwen2.5-Coder-3B-Instruct-GGUF --local-dir models/Qwen2.5-Coder-3B-Instruct",
+    ],
+    _chdir="/BitNet",
+    _env=BITNET_ENV,
+    _parallel=4,
+)
+
 # Run environment setup
 server.shell(
     name="Run BitNet environment setup",
@@ -73,22 +84,42 @@ server.shell(
     _env=BITNET_ENV,
 )
 
-# Keep the upstream launcher unchanged, but make its python3 use the venv.
-files.put(
-    name="Install BitNet inference wrapper",
-    src=StringIO(
-        '#!/bin/sh\n'
-        'export PATH="/BitNet/.venv/bin:$PATH"\n'
-        'exec /bin/bash /BitNet/run_inference.sh "$@"\n'
-    ),
-    dest="/usr/local/libexec/bitnet-run-inference",
+files.directory(
+    name="Ensure BitNet wrapper directory exists",
+    path="/usr/local/libexec",
     user="root",
     group="root",
     mode="755",
 )
 
-files.link(
-    name="Expose BitNet inference command",
-    path="/usr/local/bin/run_inference",
-    target="/usr/local/libexec/bitnet-run-inference",
-)
+# Keep the upstream launchers unchanged, but make their python3 use the venv.
+for command in (
+    "run_inference",
+    "run_inference_server",
+    "run_inference_qwen3b",
+    "run_inference_server_qwen3b",
+):
+    server.shell(
+        name=f"Make {command}.sh executable",
+        commands=[f"chmod 755 /BitNet/{command}.sh"],
+    )
+
+    wrapper_path = f"/usr/local/libexec/bitnet-{command.replace('_', '-')}"
+    files.put(
+        name=f"Install BitNet {command} wrapper",
+        src=StringIO(
+            '#!/bin/sh\n'
+            'export PATH="/BitNet/.venv/bin:$PATH"\n'
+            f'exec /bin/bash /BitNet/{command}.sh "$@"\n'
+        ),
+        dest=wrapper_path,
+        user="root",
+        group="root",
+        mode="755",
+    )
+
+    files.link(
+        name=f"Expose BitNet {command} command",
+        path=f"/usr/local/bin/{command}",
+        target=wrapper_path,
+    )
